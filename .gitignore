@@ -5,3 +5,5 @@
 *.pdf
 naive
 smv
+obj/*
+bin/*

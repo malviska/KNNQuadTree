@@ -16,10 +16,10 @@ TARGET := ./bin/tp3.out
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^ -lm
 
 ./obj/%.o: ./src/%.c
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -lm
 
 clean:
 	rm -f $(OBJS) $(TARGET)
