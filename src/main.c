@@ -6,6 +6,46 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<stdbool.h>
+
+void activate(Map map, char BUFFER[1000]){
+  char order;
+  char * id = malloc(sizeof(char) * 50);
+  sscanf(BUFFER, "%c %s", &order, id);
+  Addr addr = mapGet(map, id);
+  bool active = addr->active;
+  if(!active){
+    addr->active = true;
+    printf("Ponto de recarga %s ativado.\n", id);
+  }else{
+    printf("Ponto de recarga %s já estava ativo.\n", id);
+  }
+  free(id);
+}
+
+void deactivate(Map map, char BUFFER[1000]){
+  char order;
+  char * id = malloc(sizeof(char) * 50);
+  sscanf(BUFFER, "%c %s", &order, id);
+  Addr addr = mapGet(map, id);
+  bool active = addr->active;
+  if(active){
+    addr->active = false;
+    printf("Ponto de recarga %s desativado.\n", id);
+  }else{
+    printf("Ponto de recarga %s já estava desativado.\n", id);
+  }
+}
+
+void nearestNeighbours(Qt qt, char BUFFER[1000]){
+  char order;
+  double px;
+  double py;
+  int locations;
+  sscanf(BUFFER, "%c %lf %lf %d", &order, &px, &py, &locations);
+  PQ pq = qtKNN(qt, px, py, locations);
+  pqDump(pq);
+}
 
 int main(int argc, char ** argv){
 
@@ -74,36 +114,13 @@ int main(int argc, char ** argv){
     sscanf(BUFFER, "%c", &order);
     switch(order){
       case 'C':
-        double px;
-        double py;
-        int locations;
-        sscanf(BUFFER, "%c %lf %lf %d", &order, &px, &py, &locations);
-        PQ pq = qtKNN(qt, px, py, locations);
-        pqDump(pq);
+        nearestNeighbours(qt, BUFFER);
         break;
       case 'D':
-        char * idD = malloc(sizeof(char) * 50);
-        sscanf(BUFFER, "%c %s", &order, idD);
-        Addr addrD = mapGet(map, idD);
-        bool activeD = addrD->active;
-        if(activeD){
-          addrD->active = false;
-          printf("Ponto de recarga %s desativado.\n", idD);
-        }else{
-          printf("Ponto de recarga %s já estava desativado.\n", idD);
-        }
+        deactivate(map, BUFFER);
         break;
       case 'A':
-        char * idA = malloc(sizeof(char) * 50);
-        sscanf(BUFFER, "%c %s", &order, idA);
-        Addr addrA = mapGet(map, idA);
-        bool activeA = addrA->active;
-        if(!activeA){
-          addrA->active = true;
-          printf("Ponto de recarga %s ativado.\n", idA);
-        }else{
-          printf("Ponto de recarga %s já estava ativo.\n", idA);
-        }
+        activate(map, BUFFER);
         break;
     }
   }

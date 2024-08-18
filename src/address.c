@@ -2,6 +2,7 @@
 
 #include<stdlib.h>
 #include<stdio.h>
+#include<stdbool.h>
 
 Addr addrNew(char * inded,
  long id_logrado,

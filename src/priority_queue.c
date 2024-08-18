@@ -2,27 +2,20 @@
 #include<stdio.h>
 #include"priority_queue.h"
 
-
-
-
-
 int getAncestor(PQ pq, int pos){
   int ancestor = (pos-1)/2;
   return (ancestor >= 0) ? ancestor : -1;
 }
 
-int getLeft(PQ pq, int pos){
+int getLeft(PQ pq, int pos, ul size){
   int left = 2*pos+1;
-  return (left < pq->size) ? left :  -1;
+  return (left < size) ? left :  -1;
 }
 
-int getRight(PQ pq, int pos){
+int getRight(PQ pq, int pos, ul size){
   int right = 2*pos+2;
-  return (right < pq->size) ? right : -1;
+  return (right < size) ? right : -1;
 }
-
-
-
 
 Node nodeNew(Addr address, double distance){
   Node node = malloc(sizeof(node_t));
@@ -71,8 +64,8 @@ Node pqRemove(PQ pq){
   pq->size--;
   int pos = 0;
   int tst;
-  int left = getLeft(pq, pos);
-  int right = getRight(pq, pos);
+  int left = getLeft(pq, pos, pq->size);
+  int right = getRight(pq, pos, pq->size);
   Node aux;
   while(left != -1 || right != -1){
     if(right == -1){
@@ -92,19 +85,19 @@ Node pqRemove(PQ pq){
     }else{
       break;
     }
-    left = getLeft(pq, pos);
-    right = getRight(pq, pos);
+    left = getLeft(pq, pos, pq->size);
+    right = getRight(pq, pos, pq->size);
   }
   aux = NULL;
 
   return nd;
 }
 
-void pqheapfy(PQ pq, ul root){
+void pqHeapfy(PQ pq, ul root, ul size){
   int pos = root;
   int tst;
-  int left = getLeft(pq, pos);
-  int right = getRight(pq, pos);
+  int left = getLeft(pq, pos, size);
+  int right = getRight(pq, pos, size);
   Node aux;
   while(left != -1 || right != -1){
     if(right == -1){
@@ -124,21 +117,13 @@ void pqheapfy(PQ pq, ul root){
     }else{
       break;
     }
-    left = getLeft(pq, pos);
-    right = getRight(pq, pos);
+    left = getLeft(pq, pos, size);
+    right = getRight(pq, pos, size);
   }
   aux = NULL;
 }
 
-void pqMaxHeap(PQ pq){
-  ul n = pq->size/2;
-  while(n>0){
-    n-=1;
-    pqheapfy(pq, n);
-  }
-}
-
-Node pqHeapSort(PQ pq){
+void pqHeapSort(PQ pq){
   int t = pq->size -1;
   Node aux;
   while(t>0){
@@ -146,11 +131,12 @@ Node pqHeapSort(PQ pq){
     pq->queue[t] = pq->queue[0];
     pq->queue[0] = aux;
     t -=1;
-
+    pqHeapfy(pq, 0, t);
   }
 }
 
 void pqDump(PQ pq){
+  pqHeapSort(pq);
   for(int i = 0; i<pq->size; i++){
     printAddress(pq->queue[i]->address);
     printf(" (%.3lf)", pq->queue[i]->distance);
