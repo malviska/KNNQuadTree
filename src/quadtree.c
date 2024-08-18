@@ -81,10 +81,6 @@ void qtSmartSearch(Qt qt, double px, double py, addr_index root, PQ pq){
   addr_nw nw = qt->tree[root]->nw;
   addr_se se = qt->tree[root]->se;
   addr_sw sw = qt->tree[root]->sw;
-  if(root == 18){
-    printf("I get here\n");
-  }
-
   double distance = euclideanDistance(x, y, px, py);
 
   if(qt->tree[root]->active){
@@ -103,6 +99,9 @@ void qtSmartSearch(Qt qt, double px, double py, addr_index root, PQ pq){
     if(seBound != -1 && seBound < pq->queue[0]->distance){
       qtSmartSearch(qt, px, py, se, pq);
     }
+    if(sw != -1 && distance < pq->queue[0]->distance){
+      qtSmartSearch(qt, px, py, sw, pq);
+    }
     return;
   }
   if(px<x && py>y){
@@ -116,6 +115,9 @@ void qtSmartSearch(Qt qt, double px, double py, addr_index root, PQ pq){
     }
     if(swBound != -1 && swBound < pq->queue[0]->distance){
       qtSmartSearch(qt, px, py, sw, pq);
+    }
+    if(se != -1 && distance < pq->queue[0]->distance){
+      qtSmartSearch(qt, px, py, se, pq);
     }
     return;
   }
@@ -131,6 +133,9 @@ void qtSmartSearch(Qt qt, double px, double py, addr_index root, PQ pq){
     if(swBound != -1 && swBound < pq->queue[0]->distance){
       qtSmartSearch(qt, px, py, sw, pq);
     }
+    if(nw != -1 && distance < pq->queue[0]->distance){
+      qtSmartSearch(qt, px, py, nw, pq);
+    }
     return;
   }
   if(px<x && py<y){
@@ -145,6 +150,9 @@ void qtSmartSearch(Qt qt, double px, double py, addr_index root, PQ pq){
     if(nwBound != -1 && nwBound < pq->queue[0]->distance){
       qtSmartSearch(qt, px, py, nw, pq);
     }
+    if(ne != -1 && distance < pq->queue[0]->distance){
+      qtSmartSearch(qt, px, py, ne, pq);
+    }
     return;
   }
 }
@@ -156,9 +164,6 @@ void qtDumbSearch(Qt qt, PQ pq, addr_index root, double px, double py, int n){
   if(pq->size == n){
     qtSmartSearch(qt, px, py, root, pq);
     return;
-  }
-  if(root == 18){
-    printf("I get here\n");
   }
   addr_ne ne = qt->tree[root]->ne;
   addr_nw nw = qt->tree[root]->nw;
