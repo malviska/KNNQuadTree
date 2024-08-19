@@ -35,6 +35,7 @@ void deactivate(Map map, char BUFFER[1000]){
   }else{
     printf("Ponto de recarga %s já estava desativado.\n", id);
   }
+  free(id);
 }
 
 void nearestNeighbours(Qt qt, char BUFFER[1000]){
@@ -45,10 +46,10 @@ void nearestNeighbours(Qt qt, char BUFFER[1000]){
   sscanf(BUFFER, "%c %lf %lf %d", &order, &px, &py, &locations);
   PQ pq = qtKNN(qt, px, py, locations);
   pqDump(pq);
+  pqDestroy(pq);
 }
 
 int main(int argc, char ** argv){
-
   char * BASE = NULL;
   char * COMMANDS = NULL;
   int i = 0;
@@ -62,7 +63,13 @@ int main(int argc, char ** argv){
   }
 
   if(BASE == NULL || COMMANDS == NULL){
-    return 1;
+    if(BASE == NULL){
+      BASE = "geracarga.base";
+    }
+    if(COMMANDS == NULL){
+      COMMANDS = "geracarga.ev";
+    }
+    //return 1;
   }
 
   FILE * base = fopen(BASE, "r");
@@ -103,15 +110,16 @@ int main(int argc, char ** argv){
     mapInsert(map, idend, address);
     i++;
   }
-  Qt qt = qtNew(entrys, addresses);
+  Qt qt = qtNew(i, addresses);
   int ncomm;
   if(fgets(BUFFER, sizeof(BUFFER), commands) != NULL){
     sscanf(BUFFER, "%d", &ncomm);
   }
   int j = 0;
-  while(j< ncomm && fgets(BUFFER, sizeof(BUFFER), commands) != NULL){
+  while(j < ncomm && fgets(BUFFER, sizeof(BUFFER), commands) != NULL){
     char order;
     sscanf(BUFFER, "%c", &order);
+    printf("%s", BUFFER);
     switch(order){
       case 'C':
         nearestNeighbours(qt, BUFFER);
@@ -123,7 +131,9 @@ int main(int argc, char ** argv){
         activate(map, BUFFER);
         break;
     }
+    j++;
   }
+  qtDestroy(qt);
   mapFree(map);
   for(int i = 0; i<entrys; i++){
     free(addresses[i]->idend);
@@ -135,6 +145,7 @@ int main(int argc, char ** argv){
   }
   free(addresses);
   fclose(base);
+  fclose(commands);
 
   return 0;
 

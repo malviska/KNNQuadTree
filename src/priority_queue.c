@@ -124,11 +124,11 @@ void pqHeapfy(PQ pq, ul root, ul size){
 }
 
 void pqHeapSort(PQ pq){
-  int t = pq->size -1;
+  int t = pq->size;
   Node aux;
   while(t>0){
-    aux = pq->queue[t];
-    pq->queue[t] = pq->queue[0];
+    aux = pq->queue[t-1];
+    pq->queue[t-1] = pq->queue[0];
     pq->queue[0] = aux;
     t -=1;
     pqHeapfy(pq, 0, t);

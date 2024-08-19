@@ -14,5 +14,6 @@ typedef struct {
 
 Qt qtNew(ul size, Addr * addresses);
 PQ qtKNN(Qt qt, double px, double py, int n);
+void qtDestroy(Qt qt);
 
 #endif

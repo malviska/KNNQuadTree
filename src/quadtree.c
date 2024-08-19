@@ -185,3 +185,7 @@ PQ qtKNN(Qt qt, double px, double py, int n){
 
   return pq;
 }
+
+void qtDestroy(Qt qt){
+  free(qt);
+}
